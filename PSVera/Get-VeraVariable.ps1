@@ -1,14 +1,19 @@
 ﻿function Get-VeraVariable {
+    [CmdletBinding()]
+
     param(
-        $DeviceNum,
+        [alias("Device_Num")]
+        [Parameter(ValueFromPipelineByPropertyName=$true,ValueFromPipeline=$true)]
+        [int]$DeviceNum,
 
         $ServiceId,
 
         $VariableName
     )
-
-    Invoke-VeraAPI -id "variableget" -DeviceNum $DeviceNum -serviceId $ServiceId -AdditionalParameters @{
-        "Variable" = $VariableName
-    }
+    Process {
+        Invoke-VeraAPI -id "variableget" -DeviceNum $DeviceNum -serviceId $ServiceId -AdditionalParameters @{
+            "Variable" = $VariableName
+        }
+    }   
 
 }
