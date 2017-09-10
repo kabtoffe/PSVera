@@ -25,4 +25,9 @@ Describe "Get-VeraDevice" {
         $Result.Count | Should Be 24
     }
 
+    It "When provided with a service get all devices that can be switched"{
+        $Result = Get-VeraDevice -HasService "urn:upnp-org:serviceId:SwitchPower1"
+        $Result.Count | Should Be 24
+    }
+
 }
