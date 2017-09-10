@@ -2,3 +2,4 @@
 . "$PSScriptRoot\Get-VeraDevice.ps1"
 . "$PSScriptRoot\Invoke-VeraAPI.ps1"
 . "$PSScriptRoot\Set-VeraDevice.ps1"
+. "$PSScriptRoot\Test-VeraDevice.ps1"
