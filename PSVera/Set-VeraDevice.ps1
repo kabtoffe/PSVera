@@ -27,32 +27,35 @@
     Process {
 
         if ($PSBoundParameters.ContainsKey("SwitchState")){    
-            Invoke-VeraAPI `
-            -ID "action" `
+            Invoke-VeraAction `
             -DeviceNum $DeviceNum `
             -ServiceId "urn:upnp-org:serviceId:SwitchPower1" `
-            -Action "SetTarget" `
-            -NewTargetValue $SwitchStateCode
+            -ActionName "SetTarget" `
+            -ActionParameters @{
+                "NewTargetValue" = $SwitchStateCode
+            }
         }
         
         
         if ($PSBoundParameters.ContainsKey("Dimmer")){    
-            Invoke-VeraAPI `
-            -ID "action" `
+            Invoke-VeraAction `
             -DeviceNum $DeviceNum `
             -ServiceId "urn:upnp-org:serviceId:Dimming1" `
-            -Action "SetLoadLevelTarget" `
-            -NewLoadLevelTarget $Dimmer
+            -ActionName "SetLoadLevelTarget" `
+            -ActionParameters @{
+                "NewLoadLevelTarget" = $Dimmer
+            }
         }
 
         if ($PSBoundParameters.ContainsKey("Hue")){
-            Invoke-VeraAPI `
-            -ID "action" `
+            Invoke-VeraAction `
             -DeviceNum $DeviceNum `
             -ServiceId "urn:micasaverde-com:serviceId:PhilipsHue1" `
-            -Action "SetHueAndSaturation" `
-            -Hue $Hue `
-            -Saturation $Saturation
+            -ActionName "SetHueAndSaturation" `
+            -ActionParameters @{
+                "Hue" = $Hue
+                "Saturation" = $Saturation
+            }
         }
     }
 

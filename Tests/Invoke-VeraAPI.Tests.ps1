@@ -1,5 +1,6 @@
 ﻿$ModuleDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ModuleDir = (Get-Item "$ModuleDir\..\PSVera").FullName
+$testdir = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 Import-Module "$ModuleDir\PSVera.psm1" -Force
 
@@ -8,17 +9,7 @@ Describe "Invoke-VeraAPI" {
 
     Connect-Vera -VeraHost "hostname"
 
-    Mock Invoke-RestMethod -ModuleName PSVera {
-        $Split = $Uri.ToString().Split("?")
-        $Data = @{
-            "Hostname" = $Split[0]
-        }
-        $Split[1].Split("&") | ForEach-Object {
-            $Parameter = $_.Split("=")
-            $Data.Add($Parameter[0],$Parameter[1])
-        }
-        $Data
-    }
+    . "$testdir\Mocks\Invoke-Restmethod.ps1"
 
     It "No parameters provided" {
         $parameters = Invoke-VeraAPI
@@ -50,5 +41,11 @@ Describe "Invoke-VeraAPI" {
     It "When provided with other output format" {
         $parameters = Invoke-VeraAPI -OutputFormat "json"
         $parameters["output_format"] | should be "json"
+    }
+
+    It "When provided with additional parameters" {
+        $parameters = Invoke-VeraAPI -id "action" -AdditionalParameters @{ "foo" = "bar"  }
+        $parameters["id"] | Should Be "action"
+        $parameters["foo"] | Should Be "bar"
     }
 }
