@@ -32,7 +32,7 @@
             -ServiceId "urn:upnp-org:serviceId:SwitchPower1" `
             -ActionName "SetTarget" `
             -ActionParameters @{
-                "NewTargetValue" = $SwitchStateCode
+                "newTargetValue" = $SwitchStateCode
             }
         }
         

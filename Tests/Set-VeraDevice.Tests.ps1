@@ -26,6 +26,7 @@ Describe "Set-VeraDevice" {
             $Response["devicenum"] | should be "26"
             $Response["serviceId"] | Should Be "urn:upnp-org:serviceId:SwitchPower1"
             $Response["action"] | Should Be "SetTarget"
+            $Response.Keys | where-object { $_ -eq "newTargetValue" } | Should BeExactly "newTargetValue"
             $Response["newTargetValue"] | Should Be 0
         }
 
