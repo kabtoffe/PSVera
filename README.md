@@ -1,0 +1,1 @@
+A work in progress PowerShell Module for querying and controlling a Vera Controller.
