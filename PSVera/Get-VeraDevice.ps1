@@ -9,8 +9,7 @@
 
     if ($HasSwitch){
         $devices = $devices  | Where-Object {
-            $_.servicelist.service.serviceId -contains
-            "urn:upnp-org:serviceId:SwitchPower1"
+            Test-VeraService -Device $_ -ServiceId "urn:upnp-org:serviceId:SwitchPower1"
         }
     }
 

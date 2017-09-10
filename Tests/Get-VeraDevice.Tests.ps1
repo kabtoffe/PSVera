@@ -4,6 +4,7 @@ $here = (Get-Item "$here\..\PSVera").FullName
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
 . "$here\$sut"
 . "$here\Connect-Vera.ps1"
+. "$here\Test-VeraService.ps1"
 
 Describe "Get-VeraDevice" {
 
