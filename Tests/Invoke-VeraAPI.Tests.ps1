@@ -1,14 +1,14 @@
-﻿$here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$here = (Get-Item "$here\..\PSVera").FullName
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Connect-Vera.ps1"
+﻿$ModuleDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ModuleDir = (Get-Item "$ModuleDir\..\PSVera").FullName
+
+Import-Module "$ModuleDir\PSVera.psm1" -Force
+
 
 Describe "Invoke-VeraAPI" {
 
     Connect-Vera -VeraHost "hostname"
 
-    Mock Invoke-RestMethod {
+    Mock Invoke-RestMethod -ModuleName PSVera {
         $Split = $Uri.ToString().Split("?")
         $Data = @{
             "Hostname" = $Split[0]

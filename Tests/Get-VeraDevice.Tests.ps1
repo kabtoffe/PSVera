@@ -1,18 +1,17 @@
-﻿$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+﻿$ModuleDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $testdir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$here = (Get-Item "$here\..\PSVera").FullName
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
-. "$here\Connect-Vera.ps1"
-. "$here\Test-VeraService.ps1"
+$ModuleDir = (Get-Item "$ModuleDir\..\PSVera").FullName
+
+Import-Module "$ModuleDir\PSVera.psm1" -Force
+
 
 Describe "Get-VeraDevice" {
 
     Connect-Vera -VeraHost "hostname"
-    $xml = [xml](Get-Content -Raw "$testdir\TestData\AllDeviceData.xml")
 
-    Mock Invoke-RestMethod {
-        $xml
+    Mock Invoke-RestMethod -ModuleName PSVera {
+        #Didn't come up with way to pass testdir to module scope mock
+        [xml](Get-Content -Raw "C:\Users\Kristoffer\Onedrive\PSVera\Tests\TestData\AllDeviceData.xml")
     }
 
     

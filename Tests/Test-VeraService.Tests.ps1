@@ -1,8 +1,8 @@
-﻿$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+﻿$ModuleDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $testdir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$here = (Get-Item "$here\..\PSVera").FullName
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '\.Tests\.', '.'
-. "$here\$sut"
+$ModuleDir = (Get-Item "$ModuleDir\..\PSVera").FullName
+
+Import-Module "$ModuleDir\PSVera.psm1" -Force
 
 Describe "Test-VeraService" {
 
