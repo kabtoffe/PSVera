@@ -4,3 +4,5 @@
 . "$PSScriptRoot\Set-VeraDevice.ps1"
 . "$PSScriptRoot\Test-VeraService.ps1"
 . "$PSScriptRoot\Invoke-VeraAction.ps1"
+. "$PSScriptRoot\Get-VeraStatus.ps1"
+. "$PSScriptRoot\Get-VeraVariable.ps1"
