@@ -69,7 +69,8 @@ Describe "Set-VeraDevice" {
             $result = Set-VeraDevice -DeviceNum 4 -Dimmer 50
             $result["action"] | Should Be "SetLoadLevelTarget"
             $result["serviceid"] | Should Be "urn:upnp-org:serviceId:Dimming1"
-            $result["NewLoadLevelTarget"] | Should Be 50
+            $result.Keys | where-object { $_ -eq "newLoadlevelTarget" } | Should BeExactly "newLoadlevelTarget"
+            $result["newLoadlevelTarget"] | Should Be 50
 
         }
 

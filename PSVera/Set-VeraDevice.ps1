@@ -43,7 +43,7 @@
             -ServiceId "urn:upnp-org:serviceId:Dimming1" `
             -ActionName "SetLoadLevelTarget" `
             -ActionParameters @{
-                "NewLoadLevelTarget" = $Dimmer
+                "newLoadlevelTarget" = $Dimmer
             }
         }
 
