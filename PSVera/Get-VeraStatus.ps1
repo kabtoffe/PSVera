@@ -16,7 +16,7 @@
 
         $result = (Invoke-VeraAPI @parameters).root
 
-        if ($DeviceNum -ne $null){
+        if ($PSBoundParameters.ContainsKey("DeviceNum")){
             $Attribute = "Device_Num_$DeviceNum"
             $result = $result.$Attribute
         }

@@ -19,14 +19,17 @@ Describe "Get-VeraStatus" {
     }
 
     It "Get all status" {
-        Get-VeraStatus
+        $result = Get-VeraStatus
         Assert-MockCalled -CommandName Invoke-VeraAPI -Times 1 -Exactly -ModuleName PSVera
+        $result | Should Not Be $null
     }
 
     It "Get one status" {
-        Get-VeraStatus -DeviceNum 26
-        Assert-MockCalled -CommandName Invoke-VeraAPI -Times 1 -Exactly -ModuleName PSVera  {
-            $DeviceNum -and $DeviceNum -eq 26
-        }
+            $result = Get-VeraStatus -DeviceNum 26
+            Assert-MockCalled -CommandName Invoke-VeraAPI -Times 1 -Exactly -ModuleName PSVera  {
+            $DeviceNum -and $DeviceNum -eq 26 }
+
+            $result | Should Not Be $null
     }
+    
 }
