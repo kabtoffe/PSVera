@@ -6,3 +6,4 @@
 . "$PSScriptRoot\Invoke-VeraAction.ps1"
 . "$PSScriptRoot\Get-VeraStatus.ps1"
 . "$PSScriptRoot\Get-VeraVariable.ps1"
+. "$PSScriptRoot\Get-VeraRoom.ps1"
