@@ -30,4 +30,9 @@ Describe "Get-VeraDevice" {
         $Result.Count | Should Be 24
     }
 
+    It "When provided with switch HasDimmer get all devices that have Dimmer"{
+        $Result = Get-VeraDevice -HasDimmer
+        $Result.Count | Should Be 20
+    }
+
 }

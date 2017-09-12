@@ -2,23 +2,28 @@
 
     param(
         [switch]$HasSwitch,
+        [switch]$HasDimmer,
         [string]$HasService
     )
 
-    $response = Invoke-VeraAPI -ID "device"
-    $devices = $response.root.device.deviceList.device.devicelist.device
+    if ($PSBoundParameters.Keys.Count -eq 0 -or $HasService){
+        $response = Invoke-VeraAPI -ID "device"
+        $devices = $response.root.device.deviceList.device.devicelist.device    
+        if ($HasService){
+            $devices  | Where-Object {
+                Test-VeraService -Device $_ -ServiceId $HasService
+            }
+        }
+        else {
+            $devices
+        }
+    }
 
     if ($HasSwitch){
-        $devices = $devices  | Where-Object {
-            Test-VeraService -Device $_ -ServiceId "urn:upnp-org:serviceId:SwitchPower1"
-        }
+        Get-VeraDevice -HasService $SwitchServiceId     
     }
 
-    if ($HasService){
-        $devices = $devices  | Where-Object {
-            Test-VeraService -Device $_ -ServiceId $HasService
-        }
+    if ($HasDimmer){
+        Get-VeraDevice -HasService $DimmingServiceId    
     }
-
-    $devices
 }
