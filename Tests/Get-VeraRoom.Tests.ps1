@@ -18,13 +18,13 @@ Describe "Get-VeraRoom" {
     }
 
     It "If provided with id return that room"{
-        $room = Get-VeraRoom -Id 3
+        $room = Get-VeraRoom -RoomId 3
         $room.name | Should Be "Vintti"
     }
 
     It "If provided with name return that room"{
         $room = Get-VeraRoom -Name "Vintti"
-        $room.id | Should Be 3
+        $room.RoomId | Should Be 3
     }
 
 }

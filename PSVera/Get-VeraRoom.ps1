@@ -1,20 +1,23 @@
 ﻿function Get-VeraRoom {
 
     param(
-        $Id,
+        $RoomId,
 
         $Name
     )
 
     $userdata = Invoke-VeraApi -id "user_data"
     $rooms = $userdata.root.rooms.room
-    if ($Id){
-        $rooms = $rooms | Where-Object { $_.id -eq $Id}
+    if ($RoomId){
+        $rooms = $rooms | Where-Object { $_.id -eq $RoomId}
     }
 
     if ($Name){
         $rooms = $rooms | Where-Object { $_.name -eq $Name}
     }
 
-    $rooms
+    $rooms | Select-Object @{
+        N = "RoomId"
+        E = {$_.id}
+    },name
 }
