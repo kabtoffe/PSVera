@@ -7,6 +7,7 @@
 . "$PSScriptRoot\Get-VeraStatus.ps1"
 . "$PSScriptRoot\Get-VeraVariable.ps1"
 . "$PSScriptRoot\Get-VeraRoom.ps1"
+. "$PSScriptRoot\ShortcutCommands.ps1"
 
 #ServiceIds
 #$script:ZWaveNetworkServiceId = "urn:micasaverde-com:serviceId:ZWaveNetwork1"
