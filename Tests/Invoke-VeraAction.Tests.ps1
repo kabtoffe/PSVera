@@ -8,42 +8,54 @@ Describe "Invoke-VeraAction" {
 
     Connect-Vera "hostname"
 
-    . "$testdir\Mocks\Invoke-Restmethod.ps1"
+    Mock Invoke-VeraAPI -ModuleName PSVera
 
     It "Calls with id action" {
         $parameters = Invoke-VeraAction
-        $parameters["id"] | Should Be "action"
+        Assert-MockCalled -CommandName Invoke-VeraAPI -ModuleName PSVera -Scope It -ParameterFilter {
+            $Id -and $Id -eq "action"
+        }
     }
 
     It "Action name provided" {
         $parameters = Invoke-VeraAction -ActionName "Foo"
-        $parameters["id"] | Should Be "action"
-        $parameters["action"] | Should Be "Foo"
+        Assert-MockCalled -CommandName Invoke-VeraAPI -ModuleName PSVera -Scope It -ParameterFilter {
+            $Id -and $Id -eq "action" -and
+            $action -and $Action -eq "foo"
+        }
     }
 
     It "Action name and service provided" {
         $parameters = Invoke-VeraAction -ActionName "Foo" -ServiceId "AServiceId"
-        $parameters["id"] | Should Be "action"
-        $parameters["action"] | Should Be "Foo"
-        $parameters["serviceid"] | Should Be "AServiceId"
+        Assert-MockCalled -CommandName Invoke-VeraAPI -ModuleName PSVera -Scope It -ParameterFilter {
+            $Id -and $Id -eq "action" -and
+            $action -and $Action -eq "foo" -and
+            $serviceid -and $serviceid -eq "AServiceId"
+        }
     }
 
     It "Action name, devicenum and service provided" {
         $parameters = Invoke-VeraAction -ActionName "Foo" -ServiceId "AServiceId" -DeviceNum 6
-        $parameters["id"] | Should Be "action"
-        $parameters["action"] | Should Be "Foo"
-        $parameters["serviceid"] | Should Be "AServiceId"
-        $parameters["DeviceNum"] | Should Be 6
+        Assert-MockCalled -CommandName Invoke-VeraAPI -ModuleName PSVera -Scope It -ParameterFilter {
+            $Id -and $Id -eq "action" -and
+            $action -and $Action -eq "foo" -and
+            $serviceid -and $serviceid -eq "AServiceId" -and
+            $DeviceNum -and $DeviceNum -eq 6
+        }
+
     }
 
     It "Action parameters provided" {
         $parameters = Invoke-VeraAction -ActionName "Foo" -ServiceId "AServiceId" -DeviceNum 6 -ActionParameters @{
             "NewValue" = 3
         }
-        $parameters["id"] | Should Be "action"
-        $parameters["action"] | Should Be "Foo"
-        $parameters["serviceid"] | Should Be "AServiceId"
-        $parameters["DeviceNum"] | Should Be 6
-        $parameters["NewValue"] | Should Be 3
+        Assert-MockCalled -CommandName Invoke-VeraAPI -ModuleName PSVera -Scope It -ParameterFilter {
+            $Id -and $Id -eq "action" -and
+            $action -and $Action -eq "foo" -and
+            $serviceid -and $serviceid -eq "AServiceId" -and
+            $DeviceNum -and $DeviceNum -eq 6 -and
+            $AdditionalParameters -and $AdditionalParameters.ContainsKey("NewValue") -and
+            $AdditionalParameters["NewValue"] -eq 3
+        }
     }
 }
