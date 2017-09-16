@@ -7,59 +7,71 @@ Describe "Set-VeraDevice" {
 
     Connect-Vera -VeraHost "hostname"
 
-    Mock Invoke-RestMethod -ModuleName PSVera {
-        $Split = $Uri.ToString().Split("?")
-        $LocalData = @{
-            "Hostname" = $Split[0]
-        }
-        $Split[1].Split("&") | ForEach-Object {
-            $Parameter = $_.Split("=")
-            $LocalData.Add($Parameter[0],$Parameter[1])
-        }
-        $LocalData
-    }
+    Mock Invoke-RestMethod -ModuleName PSVera
 
     Context "Switches" {
         It "Should send command to turn off" {
-            $Response = Set-VeraDevice -DeviceNum 26 -SwitchState Off
-            $Response["id"] | Should Be "action"
-            $Response["devicenum"] | should be "26"
-            $Response["serviceId"] | Should Be "urn:upnp-org:serviceId:SwitchPower1"
-            $Response["action"] | Should Be "SetTarget"
-            $Response.Keys | where-object { $_ -eq "newTargetValue" } | Should BeExactly "newTargetValue"
-            $Response["newTargetValue"] | Should Be 0
+            $result = Set-VeraDevice -DeviceNum 26 -SwitchState Off
+
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("id=action") -and`
+                $Uri.ToString().Contains("DeviceNum=26") -and`
+                $Uri.ToString().Contains("serviceId=urn:upnp-org:serviceId:SwitchPower1") -and`
+                $Uri.ToString().Contains("action=SetTarget") -and`
+                $Uri.ToString().Contains("newTargetValue=0")
+            }
         }
 
         It "Should send command to turn on" {
-            $Response = Set-VeraDevice -DeviceNum 26 -SwitchState On
-            $Response["id"] | Should Be "action"
-            $Response["devicenum"] | should be "26"
-            $Response["serviceId"] | Should Be "urn:upnp-org:serviceId:SwitchPower1"
-            $Response["action"] | Should Be "SetTarget"
-            $Response["newTargetValue"] | Should Be 1
+            $result = Set-VeraDevice -DeviceNum 26 -SwitchState On
+
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=26&") -and
+                $Uri.ToString().Contains("&serviceId=urn:upnp-org:serviceId:SwitchPower1&") -and
+                $Uri.ToString().Contains("&action=SetTarget&") -and
+                $Uri.ToString().Contains("&newTargetValue=1&")
+            }
         }
 
         It "Should throw when called with invalid state" {
-            { $Data = Set-VeraDevice -DeviceNum 26 -SwitchState NotAState } | Should Throw
+            { Set-VeraDevice -DeviceNum 26 -SwitchState NotAState } | Should Throw
         }
 
 
         It "When provided with a device via pipeline" {
-            $Response = [pscustomobject]@{
-                "Device_Num" = 26
-            } | Set-VeraDevice -SwitchState On
-            $Response["devicenum"] | Should Be 26
-            $Response["newTargetValue"] | Should Be 1
+            $result = [pscustomobject]@{
+                "Device_Num" = 12
+            } | Set-VeraDevice -SwitchState Off
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=12&") -and
+                $Uri.ToString().Contains("&serviceId=urn:upnp-org:serviceId:SwitchPower1&") -and
+                $Uri.ToString().Contains("&action=SetTarget&") -and
+                $Uri.ToString().Contains("&newTargetValue=0&")
+            }
         }
 
         It "When provided with two devices via pipeline" {
-            $Response = [pscustomobject]@{
-                "Device_Num" = 26
+            $result = [pscustomobject]@{
+                "Device_Num" = 9
             },[pscustomobject]@{
-                "Device_Num" = 26
+                "Device_Num" = 22
             } | Set-VeraDevice -SwitchState On
-            $Response[1]["devicenum"] | Should Be 26
-            $Response[1]["newTargetValue"] | Should Be 1
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=9&") -and
+                $Uri.ToString().Contains("&serviceId=urn:upnp-org:serviceId:SwitchPower1&") -and
+                $Uri.ToString().Contains("&action=SetTarget&") -and
+                $Uri.ToString().Contains("&newTargetValue=1&")
+            }
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=22&") -and
+                $Uri.ToString().Contains("&serviceId=urn:upnp-org:serviceId:SwitchPower1&") -and
+                $Uri.ToString().Contains("&action=SetTarget&") -and
+                $Uri.ToString().Contains("&newTargetValue=1&")
+            }
         }
     }
 
@@ -67,10 +79,13 @@ Describe "Set-VeraDevice" {
 
         It "Calling with valid value" {
             $result = Set-VeraDevice -DeviceNum 4 -Dimmer 50
-            $result["action"] | Should Be "SetLoadLevelTarget"
-            $result["serviceid"] | Should Be "urn:upnp-org:serviceId:Dimming1"
-            $result.Keys | where-object { $_ -eq "newLoadlevelTarget" } | Should BeExactly "newLoadlevelTarget"
-            $result["newLoadlevelTarget"] | Should Be 50
+            Assert-MockCalled Invoke-RestMethod -Scope It -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=4&") -and
+                $Uri.ToString().Contains("&serviceId=urn:upnp-org:serviceId:Dimming1&") -and
+                $Uri.ToString().Contains("&action=SetLoadLevelTarget&") -and
+                $Uri.ToString().Contains("&newLoadlevelTarget=50&")
+            }
 
         }
 
@@ -80,10 +95,14 @@ Describe "Set-VeraDevice" {
 
         It "Hue and saturation can be set" {
             $result = Set-VeraDevice -DeviceNum 4 -Hue 4000 -Saturation 200
-            $result["ServiceId"] | Should Be "urn:micasaverde-com:serviceId:PhilipsHue1"
-            $result["action"] | Should Be "SetHueAndSaturation"
-            $result["Hue"] | Should Be 4000
-            $result["Saturation"] | Should Be 200
+            Assert-MockCalled Invoke-RestMethod -ModuleName PSVera -ParameterFilter {
+                $Uri.ToString().Contains("?id=action") -and
+                $Uri.ToString().Contains("&DeviceNum=4&") -and
+                $Uri.ToString().Contains("&serviceId=urn:micasaverde-com:serviceId:PhilipsHue1&") -and
+                $Uri.ToString().Contains("&action=SetHueAndSaturation&") -and
+                $Uri.ToString().Contains("&Hue=4000&") -and 
+                $Uri.ToString().Contains("&Saturation=200&")
+            }
         }
 
     }
