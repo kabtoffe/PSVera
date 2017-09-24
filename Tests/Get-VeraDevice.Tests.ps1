@@ -40,4 +40,27 @@ Describe "Get-VeraDevice" {
         $Result.Count | Should Be 7
     }
 
+    It "Using category number" {
+        $result = Get-VeraDevice -CategoryNum 17
+        $result.Count | Should Be 6 #Virtual temp doesn't honor category
+    }
+
+    It "Using subcategory without category should throw"{
+        { Get-VeraDevice -SubCategoryNum 17 } | Should throw
+    }
+
+    It "Using category and subcategory number (motion sensors)" {
+        $result = Get-VeraDevice -CategoryNum 4 -SubCategoryNum 3
+        $result.Count | Should Be 6
+    }
+
+    It "Using wrong category should throw" {
+        { Get-VeraDevice -Category "Happiness Sensor" } | Should throw
+    }
+
+    It "Using category Security Sensor" {
+        $result = Get-VeraDevice -Category "Security Sensor"
+        $result.Count | Should Be 6
+    }
+
 }

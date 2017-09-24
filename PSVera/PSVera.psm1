@@ -9,6 +9,8 @@
 . "$PSScriptRoot\Get-VeraRoom.ps1"
 . "$PSScriptRoot\Get-VeraTemperature.ps1"
 
+$script:LuupDeviceCategories = Get-Content -Raw "$PSScriptRoot\luup_device_categories.json" | ConvertFrom-Json
+
 #ServiceIds
 #$script:ZWaveNetworkServiceId = "urn:micasaverde-com:serviceId:ZWaveNetwork1"
 #urn:micasaverde-com:serviceId:HaDevice1
