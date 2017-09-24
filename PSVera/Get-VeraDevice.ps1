@@ -3,12 +3,13 @@
     param(
         [switch]$HasSwitch,
         [switch]$HasDimmer,
+        [switch]$IsTemperatureSensor,
         [string]$HasService
     )
 
     if ($PSBoundParameters.Keys.Count -eq 0 -or $HasService){
         $response = Invoke-VeraAPI -ID "device"
-        $devices = $response.root.device.deviceList.device.devicelist.device    
+        $devices = $response.GetElementsByTagName("device")    
         if ($HasService){
             $devices  | Where-Object {
                 Test-VeraService -Device $_ -ServiceId $HasService
@@ -25,5 +26,9 @@
 
     if ($HasDimmer){
         Get-VeraDevice -HasService $DimmingServiceId    
+    }
+
+    if ($IsTemperatureSensor){
+        Get-VeraDevice -HasService $TemperatureSensorServiceId  
     }
 }

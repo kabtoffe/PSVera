@@ -17,22 +17,27 @@ Describe "Get-VeraDevice" {
     
     It "When provided with no device id get all devices" {
             $Result = Get-VeraDevice
-            $Result.Count | should be 32
+            $Result.Count | should be 82
     }
 
     It "When provided with swich HasSwitch get all devices that can be switched"{
         $Result = Get-VeraDevice -HasSwitch
-        $Result.Count | Should Be 24
+        $Result.Count | Should Be 25
     }
 
     It "When provided with a service get all devices that can be switched"{
         $Result = Get-VeraDevice -HasService "urn:upnp-org:serviceId:SwitchPower1"
-        $Result.Count | Should Be 24
+        $Result.Count | Should Be 25
     }
 
     It "When provided with switch HasDimmer get all devices that have Dimmer"{
         $Result = Get-VeraDevice -HasDimmer
         $Result.Count | Should Be 20
+    }
+
+    It "When provided with switch IsTemperatureSensor" {
+        $Result = Get-VeraDevice -IsTemperatureSensor
+        $Result.Count | Should Be 7
     }
 
 }
