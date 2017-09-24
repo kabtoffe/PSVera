@@ -2,7 +2,7 @@ function Get-VeraTemperature{
     [CmdletBinding()]
 
     param(
-        [alias("id")]
+        [alias("Device_Num")]
         [Parameter(ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [int]$DeviceNum
     )
